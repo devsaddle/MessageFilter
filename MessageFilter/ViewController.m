@@ -63,7 +63,9 @@
 //cell被选择时被调用
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
-    
+    NSString *str = @"123";
+    [str stringByAppendingString:@"hahaha"];
+    NSLog(@"%@",str);
 }
 
 
