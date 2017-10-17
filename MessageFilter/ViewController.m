@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "CollectionViewCell.h"
+#import "RuleViewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
@@ -17,9 +18,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBar.prefersLargeTitles = YES;
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    [self setNavBar];
 }
 
 
@@ -28,6 +28,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Init Views
+- (void)setNavBar {
+    self.navigationController.navigationBar.prefersLargeTitles = YES;
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    
+    
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(rightBarButtonItem)];
+    self.navigationItem.rightBarButtonItem = rightItem;
+
+}
+
+#pragma mark - Private Method
+- (void)rightBarButtonItem {
+    RuleViewController *ruleViewController = [[RuleViewController alloc] init];
+    [self.navigationController pushViewController:ruleViewController animated:YES];
+    
+}
 
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -63,9 +80,12 @@
 //cell被选择时被调用
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
-    NSString *str = @"123";
-    [str stringByAppendingString:@"hahaha"];
-    NSLog(@"%@",str);
+    RuleViewController *ruleViewController = [[RuleViewController alloc] init];
+    [ruleViewController ruleData:@{@"type":@"1",
+                                   @"name":@"名称",
+                                   @"keywords":@[@"word1",@"word2",@"word3"],
+                                   @"rule":@"规则"}];
+    [self.navigationController pushViewController:ruleViewController animated:YES];
 }
 
 

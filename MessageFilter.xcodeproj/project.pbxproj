@@ -18,6 +18,8 @@
 		1C0CB49E1F814090002B46DB /* MessageFilterExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0CB49D1F814090002B46DB /* MessageFilterExtension.m */; };
 		1C0CB4A21F814090002B46DB /* FilterExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C0CB49A1F814090002B46DB /* FilterExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C0CB4AB1F814C05002B46DB /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */; };
+		1CBB9E691F95B53F00215568 /* RuleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBB9E681F95B53F00215568 /* RuleViewController.m */; };
+		1CBB9E6C1F95BD2400215568 /* InputViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBB9E6B1F95BD2400215568 /* InputViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,10 @@
 		1C0CB4A81F81494B002B46DB /* FilterExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FilterExtension.entitlements; sourceTree = "<group>"; };
 		1C0CB4A91F814C05002B46DB /* CollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
 		1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
+		1CBB9E671F95B53F00215568 /* RuleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RuleViewController.h; sourceTree = "<group>"; };
+		1CBB9E681F95B53F00215568 /* RuleViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RuleViewController.m; sourceTree = "<group>"; };
+		1CBB9E6A1F95BD2400215568 /* InputViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputViewCell.h; sourceTree = "<group>"; };
+		1CBB9E6B1F95BD2400215568 /* InputViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +155,10 @@
 				1C0CB4681F813FF1002B46DB /* ViewController.m */,
 				1C0CB4A91F814C05002B46DB /* CollectionViewCell.h */,
 				1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */,
+				1CBB9E671F95B53F00215568 /* RuleViewController.h */,
+				1CBB9E681F95B53F00215568 /* RuleViewController.m */,
+				1CBB9E6A1F95BD2400215568 /* InputViewCell.h */,
+				1CBB9E6B1F95BD2400215568 /* InputViewCell.m */,
 				1C0CB46A1F813FF1002B46DB /* Main.storyboard */,
 				1C0CB46D1F813FF1002B46DB /* Assets.xcassets */,
 				1C0CB46F1F813FF1002B46DB /* LaunchScreen.storyboard */,
@@ -364,6 +374,8 @@
 				1C0CB4691F813FF1002B46DB /* ViewController.m in Sources */,
 				1C0CB4741F813FF1002B46DB /* main.m in Sources */,
 				1C0CB4AB1F814C05002B46DB /* CollectionViewCell.m in Sources */,
+				1CBB9E6C1F95BD2400215568 /* InputViewCell.m in Sources */,
+				1CBB9E691F95B53F00215568 /* RuleViewController.m in Sources */,
 				1C0CB4661F813FF1002B46DB /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
