@@ -49,7 +49,7 @@
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return 20;
+    return [self getAllRules].count;
     
 }
 
@@ -81,10 +81,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
     RuleViewController *ruleViewController = [[RuleViewController alloc] init];
-    [ruleViewController ruleData:@{@"type":@"1",
-                                   @"name":@"名称",
-                                   @"keywords":@[@"word1",@"word2",@"word3"],
-                                   @"rule":@"规则"}];
+    [ruleViewController ruleData:[self getAllRules][indexPath.row]];
     [self.navigationController pushViewController:ruleViewController animated:YES];
 }
 
@@ -103,19 +100,24 @@
 
 - (NSArray *)getAllRules {
     
-    return @[@{@"type":@"12",
-               @"name":@"名称",
-               @"keywords":@[@"word1",@"word2",@"word3"],
+    return @[@{@"type":@"1",
+               @"name":@"关键词过滤",
+               @"keywords":@[@"退订",@"回复",@"TD"],
                @"rule":@"规则"},
              
-             @{@"type":@"12",
-               @"name":@"名称",
-               @"keywords":@[@"word1",@"word2",@"word3"],
+             @{@"type":@"2",
+               @"name":@"号码过滤",
+               @"keywords":@[@"1000",@"10086",@"10010"],
                @"rule":@"规则"},
              
-             @{@"type":@"12",
-               @"name":@"名称",
-               @"keywords":@[@"word1",@"word2",@"word3"],
+             @{@"type":@"3",
+               @"name":@"正则内容过滤",
+               @"keywords":@[@"word1"],
+               @"rule":@"规则"},
+             
+             @{@"type":@"4",
+               @"name":@"正则号码过滤",
+               @"keywords":@[@"word1"],
                @"rule":@"规则"}];
 }
 

@@ -113,18 +113,23 @@
     
     if (indexPath.section == 0 && indexPath.row == 0) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
-//        [cell setTitle:@"标签"];
+        [cell setTitle:@"标签"];
+        [cell setPlacegolderText:@"输入标签"];
+        [cell setText:[self.ruleDictionary objectForKey:@"name"]];
         return cell;
     } else if (indexPath.section == 0 && indexPath.row == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
         [cell setTitle:@"类型"];
+        [cell setPlacegolderText:@"点击选择过滤类型"];
+        [cell setText:[self.ruleDictionary objectForKey:@"type"]];
         [cell inputEnable:NO];
         return cell;
   
     } else if (indexPath.section == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
-        [cell setTitle:@"规则"];
-
+        [cell setTitle:[NSString stringWithFormat:@"%ld",indexPath.row + 1]];
+        [cell setPlacegolderText:@"关键词"];
+        [cell setText:[self.ruleDictionary objectForKey:@"keywords"][indexPath.row]];
         return cell;
         
     } else if (indexPath.section == 2) {

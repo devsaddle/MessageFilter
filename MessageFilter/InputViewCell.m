@@ -11,7 +11,7 @@
 @interface InputViewCell()<UITextFieldDelegate>
 
 @property (nonatomic, strong)UITextField *textFiled;
-
+@property (nonatomic, strong)UILabel *textFiledLeftView;
 @end
 
 @implementation InputViewCell
@@ -57,22 +57,26 @@
 
 - (void)setViewsLayout {
     self.textFiled.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height);
-    
+    self.textFiledLeftView.frame = CGRectMake(0, 0, 60, self.contentView.bounds.size.height );
 }
 
 #pragma mark -
-char *charTitle = "标签";
+NSString *charTitle;
 
 - (void)setData {
     
 }
 - (void)setTitle:(NSString *)title {
-    
-    charTitle = [title cStringUsingEncoding:NSUTF8StringEncoding];
-    
+    self.textFiledLeftView.text = title;
+}
+- (void)setText:(NSString *)text {
+    self.textFiled.text = text;
 }
 - (void)inputEnable:(BOOL)enable {
     self.textFiled.userInteractionEnabled = enable;
+}
+- (void)setPlacegolderText:(NSString *)text {
+    self.textFiled.placeholder = text;
 }
 
 
@@ -92,16 +96,20 @@ char *charTitle = "标签";
         _textFiled.placeholder = @"测试文字";
         _textFiled.returnKeyType = UIReturnKeyDone;
         _textFiled.delegate = self;
-
-        UILabel *leftLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
-        leftLabel.font = [UIFont systemFontOfSize:16];
-        leftLabel.textColor = [UIColor darkGrayColor];
-        leftLabel.textAlignment = NSTextAlignmentCenter;
-        leftLabel.text = [NSString stringWithCString:charTitle encoding:NSUTF8StringEncoding];
-        _textFiled.leftView = leftLabel;
+        _textFiled.leftView = self.textFiledLeftView;
         _textFiled.leftViewMode = UITextFieldViewModeAlways;
     }
     return _textFiled;
     
+}
+
+- (UILabel *)textFiledLeftView {
+    if (_textFiledLeftView == nil) {
+        _textFiledLeftView = [[UILabel alloc] initWithFrame:CGRectZero];
+        _textFiledLeftView.font = [UIFont systemFontOfSize:16];
+        _textFiledLeftView.textColor = [UIColor darkGrayColor];
+        _textFiledLeftView.textAlignment = NSTextAlignmentCenter;
+    }
+    return _textFiledLeftView;
 }
 @end

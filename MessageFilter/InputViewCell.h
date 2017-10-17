@@ -13,5 +13,7 @@
 + (instancetype)cellWithTableView:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath;
 
 - (void)setTitle:(NSString *)title;
+- (void)setText:(NSString *)text;
+- (void)setPlacegolderText:(NSString *)text;
 - (void)inputEnable:(BOOL)enable;
 @end
