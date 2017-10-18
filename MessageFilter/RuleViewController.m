@@ -121,7 +121,7 @@
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
         [cell setTitle:@"类型"];
         [cell setPlacegolderText:@"点击选择过滤类型"];
-        [cell setText:[self.ruleDictionary objectForKey:@"type"]];
+        [cell setText:typeName([self.ruleDictionary objectForKey:@"type"])];
         [cell inputEnable:NO];
         return cell;
   
@@ -132,13 +132,25 @@
         [cell setText:[self.ruleDictionary objectForKey:@"keywords"][indexPath.row]];
         return cell;
         
-    } else if (indexPath.section == 2) {
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
         static NSString *identifiler = @"ImageTableViewCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifiler];
             cell.textLabel.text = @"测试规则";
             cell.imageView.image = [UIImage imageNamed:@"test"];
+        }
+        
+        return cell;
+        
+    } else if (indexPath.section == 2 && indexPath.row == 1) {
+        static NSString *identifiler = @"ImageTableViewCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifiler];
+            cell.textLabel.text = @"删除";
+            cell.textLabel.textColor = [UIColor redColor];
+            cell.imageView.image = [UIImage imageNamed:@"delete"];
         }
         
         return cell;
@@ -151,9 +163,17 @@
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [[UIApplication sharedApplication].keyWindow endEditing:YES];
     if (indexPath.section == 0 && indexPath.row == 1) {
+       
         [self showActionSheet];
     }
+    
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [[UIApplication sharedApplication].keyWindow endEditing:YES];
+
     
 }
 
@@ -161,24 +181,30 @@
 - (void)showActionSheet {
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"关键词过滤" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+    InputViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    [alert addAction:[UIAlertAction actionWithTitle:typeName(@"1") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [cell setText:action.title];
+
     }]];
-    [alert addAction: [UIAlertAction actionWithTitle:@"号码过滤" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+    [alert addAction: [UIAlertAction actionWithTitle:typeName(@"2") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [cell setText:action.title];
+
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"正则过滤内容" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+    [alert addAction:[UIAlertAction actionWithTitle:typeName(@"3") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [cell setText:action.title];
+
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"正则过滤号码" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+    [alert addAction:[UIAlertAction actionWithTitle:typeName(@"4") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [cell setText:action.title];
+
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+
 
 #pragma mark - Lazy Load
 - (UITableView *)tableView {
@@ -191,5 +217,18 @@
     }
     return _tableView;
     
+}
+
+NSString *typeName(NSString *type){
+   NSDictionary *typeMap =
+    @{@"1":@"关键词过滤",
+      @"2":@"号码过滤",
+      @"3":@"正则过滤内容",
+      @"4":@"正则过滤号码"
+      };
+    if (type && [typeMap objectForKey:type]) {
+        return typeMap[type];
+    }
+    return @"";
 }
 @end

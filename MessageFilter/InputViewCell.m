@@ -61,11 +61,7 @@
 }
 
 #pragma mark -
-NSString *charTitle;
 
-- (void)setData {
-    
-}
 - (void)setTitle:(NSString *)title {
     self.textFiledLeftView.text = title;
 }
@@ -93,7 +89,7 @@ NSString *charTitle;
         _textFiled = [[UITextField alloc] initWithFrame:CGRectZero];
         _textFiled.textAlignment = NSTextAlignmentLeft;
         _textFiled.clearButtonMode = UITextFieldViewModeWhileEditing;
-        _textFiled.placeholder = @"测试文字";
+        _textFiled.placeholder = @"输入内容";
         _textFiled.returnKeyType = UIReturnKeyDone;
         _textFiled.delegate = self;
         _textFiled.leftView = self.textFiledLeftView;
