@@ -13,7 +13,7 @@
 
 @property(nonatomic, strong) UITableView *tableView;
 
-@property(nonatomic, strong)NSDictionary *ruleDictionary;
+@property(nonatomic, strong)NSMutableDictionary *ruleDictionary;
 
 @end
 
@@ -52,7 +52,8 @@
 
 #pragma mark - Private Method
 - (void)rightBarButtonItem {
-    
+    [[UIApplication sharedApplication].keyWindow endEditing:YES];
+
 }
 
 #pragma mark -
@@ -64,7 +65,7 @@
     if (!ruleDic || ruleDic.count <= 0) {
         return;
     }
-    self.ruleDictionary = ruleDic;
+    self.ruleDictionary = [NSMutableDictionary dictionaryWithDictionary:ruleDic];
     NSInteger type = [[ruleDic objectForKey:@"type"] integerValue];
     switch (type) {
         case 1:
@@ -97,7 +98,7 @@
         NSInteger type = [[self.ruleDictionary objectForKey:@"type"] integerValue];
         if (type == 1 || type == 2) {
             NSArray *keywords = [self.ruleDictionary objectForKey:@"keywords"];
-            return keywords.count;
+            return keywords.count + 1;
         } else {
             return 1;
         }
@@ -113,6 +114,7 @@
     
     if (indexPath.section == 0 && indexPath.row == 0) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
+//        [cell testDic:self.ruleDictionary];
         [cell setTitle:@"标签"];
         [cell setPlacegolderText:@"输入标签"];
         [cell setText:[self.ruleDictionary objectForKey:@"name"]];
@@ -125,6 +127,18 @@
         [cell inputEnable:NO];
         return cell;
   
+    } else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
+        static NSString *identifiler = @"ImageTableViewCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifiler];
+            cell.textLabel.text = @"添加";
+            cell.textLabel.textColor = [UIColor blueColor];
+            cell.imageView.image = [UIImage imageNamed:@"add"];
+        }
+        
+        return cell;
+        
     } else if (indexPath.section == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
         [cell setTitle:[NSString stringWithFormat:@"%ld",indexPath.row + 1]];
@@ -132,7 +146,7 @@
         [cell setText:[self.ruleDictionary objectForKey:@"keywords"][indexPath.row]];
         return cell;
         
-    } else if (indexPath.section == 2 && indexPath.row == 0) {
+    }else if (indexPath.section == 2 && indexPath.row == 0) {
         static NSString *identifiler = @"ImageTableViewCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
         if (cell == nil) {
@@ -162,11 +176,25 @@
 }
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"%@",self.ruleDictionary);
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
     if (indexPath.section == 0 && indexPath.row == 1) {
        
         [self showActionSheet];
+    }
+    
+    if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
+        NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
+        NSArray *keywords = [self.ruleDictionary objectForKey:@"keywords"];
+        if (keywords) {
+            self.ruleDictionary[@"keywords"] = [keywords arrayByAddingObject:@"123"];
+
+        } else {
+            self.ruleDictionary[@"keywords"] = @[@"123"];
+        }
+        [self.tableView insertRowsAtIndexPaths:@[insertIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     }
     
 }
@@ -216,6 +244,13 @@
         _tableView.dataSource = self;
     }
     return _tableView;
+    
+}
+- (NSMutableDictionary *)ruleDictionary {
+    if (_ruleDictionary == nil) {
+        _ruleDictionary = [NSMutableDictionary dictionary];
+    }
+    return _ruleDictionary;
     
 }
 

@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong)UITextField *textFiled;
 @property (nonatomic, strong)UILabel *textFiledLeftView;
+@property (nonatomic, strong)NSMutableDictionary *ruleDic;
 @end
 
 @implementation InputViewCell
@@ -75,14 +76,28 @@
     self.textFiled.placeholder = text;
 }
 
-
+- (void)ruleDic:(NSMutableDictionary *)dic {
+    self.ruleDic = dic;
+    
+}
 
 #pragma mark - UITextFieldDelegate
-//- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-//    
-//    return NO;
-//}
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    return YES;
+}
 
+- (void)textFieldDidEndEditing:(UITextField *)textField reason:(UITextFieldDidEndEditingReason)reason {
+    if ([self.textFiledLeftView.text isEqualToString:@"标签"]) {
+        
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField endEditing:YES];
+    return YES;
+}
 #pragma mark - Lazy Load
 - (UITextField *)textFiled {
     if (_textFiled == nil) {

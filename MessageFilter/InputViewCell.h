@@ -16,4 +16,5 @@
 - (void)setText:(NSString *)text;
 - (void)setPlacegolderText:(NSString *)text;
 - (void)inputEnable:(BOOL)enable;
+- (void)ruleDic:(NSMutableDictionary *)dic;
 @end
