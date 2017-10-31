@@ -8,6 +8,7 @@
 
 #import "RuleViewController.h"
 #import "InputViewCell.h"
+#import "RegularExpression.h"
 
 @interface RuleViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -53,36 +54,17 @@
 #pragma mark - Private Method
 - (void)rightBarButtonItem {
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
-
+    
 }
 
 #pragma mark -
 - (void)ruleData:(NSDictionary *)ruleDic {
-//    @{@"type":@"1", // 1 关键词过滤 2 号码过滤 3 正则过滤内容 4 正则过滤号码
-//      @"name":@"名称", // 标签
-//      @"keywords":@[@"word1",@"word2",@"word3"], // 关键词\号码数组
-//      @"rule":@"规则"};  // 正则表达式
+
     if (!ruleDic || ruleDic.count <= 0) {
         return;
     }
     self.ruleDictionary = [NSMutableDictionary dictionaryWithDictionary:ruleDic];
-    NSInteger type = [[ruleDic objectForKey:@"type"] integerValue];
-    switch (type) {
-        case 1:
-            
-            break;
-        case 2:
-            
-            break;
-        case 3:
-            
-            break;
-        case 4:
-            
-            break;
-        default:
-            break;
-    }
+  
     
 }
 
@@ -104,7 +86,7 @@
         }
   
     } else if (section == 2) {
-        return 2;
+        return 1;
         
     }
     return 0;
@@ -114,7 +96,6 @@
     
     if (indexPath.section == 0 && indexPath.row == 0) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
-//        [cell testDic:self.ruleDictionary];
         [cell setTitle:@"标签"];
         [cell setPlacegolderText:@"输入标签"];
         [cell setText:[self.ruleDictionary objectForKey:@"name"]];
@@ -127,7 +108,7 @@
         [cell inputEnable:NO];
         return cell;
   
-    } else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
+    }  else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
         static NSString *identifiler = @"ImageTableViewCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
         if (cell == nil) {
@@ -139,7 +120,7 @@
         
         return cell;
         
-    } else if (indexPath.section == 1) {
+    }  else if (indexPath.section == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
         [cell setTitle:[NSString stringWithFormat:@"%ld",indexPath.row + 1]];
         [cell setPlacegolderText:@"关键词"];
@@ -153,18 +134,6 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifiler];
             cell.textLabel.text = @"测试规则";
             cell.imageView.image = [UIImage imageNamed:@"test"];
-        }
-        
-        return cell;
-        
-    } else if (indexPath.section == 2 && indexPath.row == 1) {
-        static NSString *identifiler = @"ImageTableViewCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifiler];
-            cell.textLabel.text = @"删除";
-            cell.textLabel.textColor = [UIColor redColor];
-            cell.imageView.image = [UIImage imageNamed:@"delete"];
         }
         
         return cell;
@@ -185,13 +154,15 @@
     }
     
     if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
-        NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
+        NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         NSArray *keywords = [self.ruleDictionary objectForKey:@"keywords"];
+        if (keywords.count >= 1 && ([keywords lastObject] == nil || [[keywords lastObject] isEqualToString:@""])) {
+            return;
+        }
         if (keywords) {
-            self.ruleDictionary[@"keywords"] = [keywords arrayByAddingObject:@"123"];
-
+            self.ruleDictionary[@"keywords"] = [keywords arrayByAddingObject:@""];
         } else {
-            self.ruleDictionary[@"keywords"] = @[@"123"];
+            self.ruleDictionary[@"keywords"] = @[@""];
         }
         [self.tableView insertRowsAtIndexPaths:@[insertIndexPath] withRowAnimation:UITableViewRowAnimationRight];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
@@ -249,21 +220,14 @@
 - (NSMutableDictionary *)ruleDictionary {
     if (_ruleDictionary == nil) {
         _ruleDictionary = [NSMutableDictionary dictionary];
+        [_ruleDictionary setDictionary:@{@"type":@"1",
+                                         @"name":@"",
+                                         @"keywords":@[],
+                                         @"rule":@""
+                                         }];
     }
     return _ruleDictionary;
     
 }
 
-NSString *typeName(NSString *type){
-   NSDictionary *typeMap =
-    @{@"1":@"关键词过滤",
-      @"2":@"号码过滤",
-      @"3":@"正则过滤内容",
-      @"4":@"正则过滤号码"
-      };
-    if (type && [typeMap objectForKey:type]) {
-        return typeMap[type];
-    }
-    return @"";
-}
 @end

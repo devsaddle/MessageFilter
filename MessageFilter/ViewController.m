@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "CollectionViewCell.h"
 #import "RuleViewController.h"
+#import "RegularExpression.h"
 
 @interface ViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
 
@@ -49,7 +50,7 @@
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [self getAllRules].count;
+    return messageFilterData().count;
     
 }
 
@@ -81,44 +82,18 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
     RuleViewController *ruleViewController = [[RuleViewController alloc] init];
-    [ruleViewController ruleData:[self getAllRules][indexPath.row]];
+    [ruleViewController ruleData:messageFilterData()[indexPath.row]];
     [self.navigationController pushViewController:ruleViewController animated:YES];
 }
 
 
 #pragma mark -
-- (NSUserDefaults *)userDefault {
-    NSUserDefaults *userDefault = [[NSUserDefaults alloc] initWithSuiteName:@"group.yuan.messagefilter"];
-    return userDefault;
-    
-}
+
 
 - (void)addRule:(NSInteger)type {
     
     
 }
 
-- (NSArray *)getAllRules {
-    
-    return @[@{@"type":@"1",
-               @"name":@"关键词过滤",
-               @"keywords":@[@"退订",@"回复",@"TD"],
-               @"rule":@"规则"},
-             
-             @{@"type":@"2",
-               @"name":@"号码过滤",
-               @"keywords":@[@"1000",@"10086",@"10010"],
-               @"rule":@"规则"},
-             
-             @{@"type":@"3",
-               @"name":@"正则内容过滤",
-               @"keywords":@[@"word1"],
-               @"rule":@"规则"},
-             
-             @{@"type":@"4",
-               @"name":@"正则号码过滤",
-               @"keywords":@[@"word1"],
-               @"rule":@"规则"}];
-}
 
 @end
