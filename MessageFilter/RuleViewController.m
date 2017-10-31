@@ -13,8 +13,8 @@
 @interface RuleViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property(nonatomic, strong) UITableView *tableView;
-
-@property(nonatomic, strong)NSMutableDictionary *ruleDictionary;
+@property(nonatomic, strong)__block NSMutableDictionary *ruleDictionary;
+@property(nonatomic, assign, getter=isNewData)BOOL newsData;
 
 @end
 
@@ -24,6 +24,7 @@
     [super viewDidLoad];
     [self setNavBar];
     [self initViews];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,6 +56,14 @@
 - (void)rightBarButtonItem {
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
     
+    if (self.isNewData) {
+        addOneRule(self.ruleDictionary);
+    } else {
+        updateUserDefaultData(self.ruleDictionary, self.index);
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    NSLog(@"%@",self.ruleDictionary);
 }
 
 #pragma mark -
@@ -63,9 +72,8 @@
     if (!ruleDic || ruleDic.count <= 0) {
         return;
     }
-    self.ruleDictionary = [NSMutableDictionary dictionaryWithDictionary:ruleDic];
-  
-    
+    _ruleDictionary = [NSMutableDictionary dictionaryWithDictionary:ruleDic];
+    self.newsData = NO;
 }
 
 #pragma mark - UITableViewDataSource
@@ -99,6 +107,9 @@
         [cell setTitle:@"标签"];
         [cell setPlacegolderText:@"输入标签"];
         [cell setText:[self.ruleDictionary objectForKey:@"name"]];
+        [cell textEditEnd:^(NSString *text) {
+            self.ruleDictionary[@"name"] = text;
+        }];
         return cell;
     } else if (indexPath.section == 0 && indexPath.row == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
@@ -106,6 +117,7 @@
         [cell setPlacegolderText:@"点击选择过滤类型"];
         [cell setText:typeName([self.ruleDictionary objectForKey:@"type"])];
         [cell inputEnable:NO];
+        
         return cell;
   
     }  else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
@@ -125,6 +137,11 @@
         [cell setTitle:[NSString stringWithFormat:@"%ld",indexPath.row + 1]];
         [cell setPlacegolderText:@"关键词"];
         [cell setText:[self.ruleDictionary objectForKey:@"keywords"][indexPath.row]];
+        [cell textEditEnd:^(NSString *text) {
+            NSMutableArray *keywords = [NSMutableArray arrayWithArray:self.ruleDictionary[@"keywords"]];
+            keywords[indexPath.row] = text ;
+            self.ruleDictionary[@"keywords"] = [keywords copy];
+        }];
         return cell;
         
     }else if (indexPath.section == 2 && indexPath.row == 0) {
@@ -145,9 +162,9 @@
 }
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%@",self.ruleDictionary);
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
+    
     if (indexPath.section == 0 && indexPath.row == 1) {
        
         [self showActionSheet];
@@ -173,7 +190,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
 
-    
+    updateUserDefaultData(self.ruleDictionary, self.index);
 }
 
 #pragma mark -
@@ -182,18 +199,22 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     InputViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"1") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.ruleDictionary[@"type"] = @"1";
         [cell setText:action.title];
 
     }]];
     [alert addAction: [UIAlertAction actionWithTitle:typeName(@"2") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.ruleDictionary[@"type"] = @"2";
         [cell setText:action.title];
 
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"3") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.ruleDictionary[@"type"] = @"3";
         [cell setText:action.title];
 
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"4") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.ruleDictionary[@"type"] = @"4";
         [cell setText:action.title];
 
     }]];
@@ -225,6 +246,7 @@
                                          @"keywords":@[],
                                          @"rule":@""
                                          }];
+        self.newsData = YES;
     }
     return _ruleDictionary;
     

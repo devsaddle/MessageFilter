@@ -11,12 +11,11 @@
 #define USER_DEFAULT_MESSAGEFILTER_RULE @"MessageFilterData"
 #define USER_DEFAULT_SUITE_NAME @"group.yuan.messagefilter"
 
-NSInteger countOfMatchesInString(NSString *matchString, NSString *string) {
-    
+NSInteger countOfMatchesInString(NSString *rule, NSString *string) {
     
     NSError *error;
     
-    NSRegularExpression *regular = [NSRegularExpression regularExpressionWithPattern:matchString options:NSRegularExpressionCaseInsensitive error:&error];
+    NSRegularExpression *regular = [NSRegularExpression regularExpressionWithPattern:rule options:NSRegularExpressionCaseInsensitive error:&error];
     if (error) return -1;
     NSInteger count = [regular numberOfMatchesInString:string options:NSMatchingReportCompletion range:NSMakeRange(0, string.length)];
     return count;
@@ -34,7 +33,7 @@ NSUserDefaults *userDefault() {
 //      @"keywords":@[@"word1",@"word2",@"word3"], // 关键词\号码数组
 //      @"rule":@"规则"};  // 正则表达式
 
-NSArray *messageFilterData() {
+NSArray *messageFilterData(void) {
     if ([userDefault() objectForKey:@"MessageFilterData"]) {
         return [userDefault() objectForKey:@"MessageFilterData"];
     }
@@ -88,4 +87,10 @@ void addOneRule(NSDictionary *rule) {
 }
 
 
+void updateUserDefaultData(NSDictionary *data, NSUInteger index) {
+
+    NSMutableArray *rule = [NSMutableArray arrayWithArray:messageFilterData()];
+    rule[index] = data;
+    [userDefault() setObject:rule forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
+}
 

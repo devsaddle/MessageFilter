@@ -13,6 +13,8 @@
 @property (nonatomic, strong)UITextField *textFiled;
 @property (nonatomic, strong)UILabel *textFiledLeftView;
 @property (nonatomic, strong)NSMutableDictionary *ruleDic;
+@property (nonatomic, copy)void(^textEditEnding)(NSString *text);
+
 @end
 
 @implementation InputViewCell
@@ -81,6 +83,10 @@
     
 }
 
+- (void)textEditEnd:(void(^)(NSString *text))completed {
+    _textEditEnding = completed;
+}
+
 #pragma mark - UITextFieldDelegate
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
@@ -88,9 +94,10 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField reason:(UITextFieldDidEndEditingReason)reason {
-    if ([self.textFiledLeftView.text isEqualToString:@"标签"]) {
-        
+    if (_textEditEnding) {
+        _textEditEnding(textField.text);
     }
+
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {

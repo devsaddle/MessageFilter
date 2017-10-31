@@ -82,18 +82,13 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
     RuleViewController *ruleViewController = [[RuleViewController alloc] init];
+    ruleViewController.index = indexPath.row;
     [ruleViewController ruleData:messageFilterData()[indexPath.row]];
     [self.navigationController pushViewController:ruleViewController animated:YES];
 }
 
 
 #pragma mark -
-
-
-- (void)addRule:(NSInteger)type {
-    
-    
-}
 
 
 @end

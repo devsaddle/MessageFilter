@@ -10,6 +10,8 @@
 
 @interface RuleViewController : UIViewController
 
+@property(nonatomic, assign)NSUInteger index;
+
 - (void)ruleData:(NSDictionary *)ruleDic;
 
 @end

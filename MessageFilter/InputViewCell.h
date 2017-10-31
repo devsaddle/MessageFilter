@@ -17,4 +17,5 @@
 - (void)setPlacegolderText:(NSString *)text;
 - (void)inputEnable:(BOOL)enable;
 - (void)ruleDic:(NSMutableDictionary *)dic;
+- (void)textEditEnd:(void(^)(NSString *text))completed;
 @end

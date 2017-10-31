@@ -42,6 +42,6 @@
 
 #pragma mark - Init View
 - (void) initViews {
-    self.backgroundColor = [UIColor blueColor];
+    self.backgroundColor = [UIColor lightGrayColor];
 }
 @end
