@@ -56,10 +56,11 @@
     
 
     __block BOOL filter = NO;
-    [[self messageFilterData] enumerateObjectsUsingBlock:^(NSDictionary  *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [messageFilterData() enumerateObjectsUsingBlock:^(NSDictionary  *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         switch ([[obj objectForKey:@"type"] integerValue]) {
             case 1:
-                for (NSString *keyword in [obj objectForKey:@"keywords"]) {
+            case 3:
+                for (NSString *keyword in [obj objectForKey:@"rules"]) {
                     if (countOfMatchesInString(keyword, queryRequest.messageBody) >= 1 ) {
                         *stop = YES;
                         filter = YES;
@@ -67,32 +68,15 @@
                 }
                 break;
                 
+                
             case 2:
-                for (NSString *keyword in [obj objectForKey:@"keywords"]) {
+            case 4:
+                for (NSString *keyword in [obj objectForKey:@"rules"]) {
                     if (countOfMatchesInString(keyword, queryRequest.sender) >= 1 ) {
                         *stop = YES;
                         filter = YES;
                     }
                 }
-                break;
-            case 3:
-            {
-                NSString *rule = [obj objectForKey:@"rule"];
-                if (countOfMatchesInString(rule, queryRequest.messageBody) >= 1 ) {
-                    *stop = YES;
-                    filter = YES;
-                }
-            }
-
-                break;
-            case 4:
-            {
-                NSString *rule = [obj objectForKey:@"rule"];
-                if (countOfMatchesInString(rule, queryRequest.sender) >= 1 ) {
-                    *stop = YES;
-                    filter = YES;
-                }
-            }
                 break;
             default:
                 break;
@@ -109,17 +93,5 @@
     return ILMessageFilterActionNone;
 }
 
-#pragma mark -
-- (NSUserDefaults *)userDefault {
-    NSUserDefaults *userDefault = [[NSUserDefaults alloc] initWithSuiteName:@"group.yuan.messagefilter"];
-    return userDefault;
-    
-}
 
-- (NSArray *)messageFilterData {
-    if ([[self userDefault] objectForKey:@"MessageFilterData"]) {
-        return [[self userDefault] objectForKey:@"MessageFilterData"];
-    }
-    return @[];
-}
 @end

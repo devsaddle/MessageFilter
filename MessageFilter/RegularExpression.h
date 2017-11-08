@@ -55,3 +55,4 @@ void addOneRule(NSDictionary *rule);
  */
 void updateUserDefaultData(NSDictionary *data, NSUInteger index);
 
+NSInteger typeOfRule(NSDictionary *rule);

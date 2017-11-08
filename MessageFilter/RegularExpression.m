@@ -30,8 +30,7 @@ NSUserDefaults *userDefault() {
 
 //    @{@"type":@"1", // 1 关键词过滤 2 号码过滤 3 正则过滤内容 4 正则过滤号码
 //      @"name":@"名称", // 标签
-//      @"keywords":@[@"word1",@"word2",@"word3"], // 关键词\号码数组
-//      @"rule":@"规则"};  // 正则表达式
+//      @"rules":@[@"word1",@"word2",@"word3"], // 关键词\号码数组\正则表达式};  
 
 NSArray *messageFilterData(void) {
     if ([userDefault() objectForKey:@"MessageFilterData"]) {
@@ -40,23 +39,19 @@ NSArray *messageFilterData(void) {
     
     NSArray *messageFilterData = @[@{@"type":@"1",
                                      @"name":@"关键词过滤",
-                                     @"keywords":@[@"退订",@"回T",@"复T",@"百度",@"搜狐"],
-                                     @"rule":@"规则"},
+                                     @"rules":@[@"退订",@"回T",@"复T",@"百度",@"搜狐"]},
                                    
                                    @{@"type":@"2",
                                      @"name":@"号码过滤",
-                                     @"keywords":@[@"10086",@"10655024113090",],
-                                     @"rule":@"规则"},
+                                     @"rules":@[@"10086",@"10655024113090",]},
                                    
                                    @{@"type":@"3",
                                      @"name":@"正则内容过滤",
-                                     @"keywords":@[@"word1"],
-                                     @"rule":@"规则"},
+                                     @"rules":@[@"word1"]},
                                    
                                    @{@"type":@"4",
                                      @"name":@"正则号码过滤",
-                                     @"keywords":@[@"code2"],
-                                     @"rule":@"规则"}];
+                                     @"rules":@[@"code2"]}];
     [userDefault() setObject:messageFilterData forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
     
     return messageFilterData;
@@ -78,6 +73,13 @@ NSString *typeName(NSString *type) {
 }
 
 
+NSInteger typeOfRule(NSDictionary *rule) {
+    
+    if ([rule objectForKey:@"type"]) {
+        return [[rule objectForKey:@"type"] integerValue];
+    }
+    return 0;
+}
 
 void addOneRule(NSDictionary *rule) {
     if (rule && rule.count > 0) {

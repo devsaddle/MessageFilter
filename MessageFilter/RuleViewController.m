@@ -85,14 +85,8 @@
     if (section == 0) {
         return 2;
     } else if (section == 1) {
-        NSInteger type = [[self.ruleDictionary objectForKey:@"type"] integerValue];
-        if (type == 1 || type == 2) {
-            NSArray *keywords = [self.ruleDictionary objectForKey:@"keywords"];
-            return keywords.count + 1;
-        } else {
-            return 1;
-        }
-  
+        NSArray *rules = [self.ruleDictionary objectForKey:@"rules"];
+        return rules.count + 1;
     } else if (section == 2) {
         return 1;
         
@@ -120,7 +114,7 @@
         
         return cell;
   
-    }  else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
+    }  else if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"rules"] count]) {
         static NSString *identifiler = @"ImageTableViewCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifiler];
         if (cell == nil) {
@@ -135,13 +129,18 @@
     }  else if (indexPath.section == 1) {
         InputViewCell *cell = [InputViewCell cellWithTableView:tableView forIndexPath:indexPath];
         [cell setTitle:[NSString stringWithFormat:@"%ld",indexPath.row + 1]];
-        [cell setPlacegolderText:@"关键词"];
-        [cell setText:[self.ruleDictionary objectForKey:@"keywords"][indexPath.row]];
+        [cell setText:[self.ruleDictionary objectForKey:@"rules"][indexPath.row]];
         [cell textEditEnd:^(NSString *text) {
-            NSMutableArray *keywords = [NSMutableArray arrayWithArray:self.ruleDictionary[@"keywords"]];
-            keywords[indexPath.row] = text ;
-            self.ruleDictionary[@"keywords"] = [keywords copy];
+            NSMutableArray *rules = [NSMutableArray arrayWithArray:self.ruleDictionary[@"rules"]];
+            rules[indexPath.row] = text ;
+            self.ruleDictionary[@"rules"] = [rules copy];
         }];
+        if (typeOfRule(self.ruleDictionary) == 1 || typeOfRule(self.ruleDictionary) == 2) {
+            [cell setPlacegolderText:@"关键词"];
+        } else {
+            [cell setPlacegolderText:@"正则表达式"];
+        }
+      
         return cell;
         
     }else if (indexPath.section == 2 && indexPath.row == 0) {
@@ -170,21 +169,39 @@
         [self showActionSheet];
     }
     
-    if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"keywords"] count]) {
+    if (indexPath.section == 1 && indexPath.row == [(NSArray *)[self.ruleDictionary objectForKey:@"rules"] count]) {
         NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
-        NSArray *keywords = [self.ruleDictionary objectForKey:@"keywords"];
-        if (keywords.count >= 1 && ([keywords lastObject] == nil || [[keywords lastObject] isEqualToString:@""])) {
+        NSArray *rules = [self.ruleDictionary objectForKey:@"rules"];
+        if (rules.count >= 1 && ([rules lastObject] == nil || [[rules lastObject] isEqualToString:@""])) {
             return;
         }
-        if (keywords) {
-            self.ruleDictionary[@"keywords"] = [keywords arrayByAddingObject:@""];
+        if (rules) {
+            self.ruleDictionary[@"rules"] = [rules arrayByAddingObject:@""];
         } else {
-            self.ruleDictionary[@"keywords"] = @[@""];
+            self.ruleDictionary[@"rules"] = @[@""];
         }
         [self.tableView insertRowsAtIndexPaths:@[insertIndexPath] withRowAnimation:UITableViewRowAnimationRight];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     }
     
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1 && (typeOfRule(self.ruleDictionary) == 1 || typeOfRule(self.ruleDictionary) == 2)) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSMutableDictionary *rule = [NSMutableDictionary dictionaryWithDictionary:self.ruleDictionary];
+    NSMutableArray *rules = [NSMutableArray arrayWithArray:[rule objectForKey:@"rules"]];
+    [rules removeObjectAtIndex:indexPath.row];
+    rule[@"rules"] = rules;
+    self.ruleDictionary = rule;
+    updateUserDefaultData(rule, self.index);
+    [self.tableView reloadData];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -201,22 +218,22 @@
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"1") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         self.ruleDictionary[@"type"] = @"1";
         [cell setText:action.title];
-
+        [self.tableView reloadData];
     }]];
     [alert addAction: [UIAlertAction actionWithTitle:typeName(@"2") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         self.ruleDictionary[@"type"] = @"2";
         [cell setText:action.title];
-
+        [self.tableView reloadData];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"3") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         self.ruleDictionary[@"type"] = @"3";
         [cell setText:action.title];
-
+        [self.tableView reloadData];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:typeName(@"4") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         self.ruleDictionary[@"type"] = @"4";
         [cell setText:action.title];
-
+        [self.tableView reloadData];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
@@ -243,8 +260,7 @@
         _ruleDictionary = [NSMutableDictionary dictionary];
         [_ruleDictionary setDictionary:@{@"type":@"1",
                                          @"name":@"",
-                                         @"keywords":@[],
-                                         @"rule":@""
+                                         @"rules":@[]
                                          }];
         self.newsData = YES;
     }
