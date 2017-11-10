@@ -62,8 +62,9 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    NSDictionary *data = messageFilterData()[indexPath.row];
     CollectionViewCell *cell = [CollectionViewCell collectionViewCell:collectionView indexPath:indexPath];
+    [cell setData:data];
     return cell;
     
 }
