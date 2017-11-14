@@ -18,6 +18,8 @@
 		1C0CB49E1F814090002B46DB /* MessageFilterExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0CB49D1F814090002B46DB /* MessageFilterExtension.m */; };
 		1C0CB4A21F814090002B46DB /* FilterExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C0CB49A1F814090002B46DB /* FilterExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C0CB4AB1F814C05002B46DB /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */; };
+		1C2E33381FB948410099C860 /* DragCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E33371FB948410099C860 /* DragCollectionView.m */; };
+		1C2E333B1FB950880099C860 /* DragCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E333A1FB950880099C860 /* DragCollectionViewLayout.m */; };
 		1CB380AC1FA87902005A9304 /* RegularExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB380AB1FA87902005A9304 /* RegularExpression.m */; };
 		1CB380AD1FA87902005A9304 /* RegularExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB380AB1FA87902005A9304 /* RegularExpression.m */; };
 		1CBB9E691F95B53F00215568 /* RuleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBB9E681F95B53F00215568 /* RuleViewController.m */; };
@@ -87,6 +89,10 @@
 		1C0CB4A81F81494B002B46DB /* FilterExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FilterExtension.entitlements; sourceTree = "<group>"; };
 		1C0CB4A91F814C05002B46DB /* CollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
 		1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
+		1C2E33361FB948410099C860 /* DragCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DragCollectionView.h; sourceTree = "<group>"; };
+		1C2E33371FB948410099C860 /* DragCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DragCollectionView.m; sourceTree = "<group>"; };
+		1C2E33391FB950880099C860 /* DragCollectionViewLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DragCollectionViewLayout.h; sourceTree = "<group>"; };
+		1C2E333A1FB950880099C860 /* DragCollectionViewLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DragCollectionViewLayout.m; sourceTree = "<group>"; };
 		1CB380AA1FA87902005A9304 /* RegularExpression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegularExpression.h; sourceTree = "<group>"; };
 		1CB380AB1FA87902005A9304 /* RegularExpression.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegularExpression.m; sourceTree = "<group>"; };
 		1CBB9E671F95B53F00215568 /* RuleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RuleViewController.h; sourceTree = "<group>"; };
@@ -157,6 +163,10 @@
 				1C0CB4651F813FF1002B46DB /* AppDelegate.m */,
 				1C0CB4671F813FF1002B46DB /* ViewController.h */,
 				1C0CB4681F813FF1002B46DB /* ViewController.m */,
+				1C2E33361FB948410099C860 /* DragCollectionView.h */,
+				1C2E33371FB948410099C860 /* DragCollectionView.m */,
+				1C2E33391FB950880099C860 /* DragCollectionViewLayout.h */,
+				1C2E333A1FB950880099C860 /* DragCollectionViewLayout.m */,
 				1C0CB4A91F814C05002B46DB /* CollectionViewCell.h */,
 				1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */,
 				1CBB9E671F95B53F00215568 /* RuleViewController.h */,
@@ -381,8 +391,10 @@
 				1C0CB4741F813FF1002B46DB /* main.m in Sources */,
 				1CB380AC1FA87902005A9304 /* RegularExpression.m in Sources */,
 				1C0CB4AB1F814C05002B46DB /* CollectionViewCell.m in Sources */,
+				1C2E33381FB948410099C860 /* DragCollectionView.m in Sources */,
 				1CBB9E6C1F95BD2400215568 /* InputViewCell.m in Sources */,
 				1CBB9E691F95B53F00215568 /* RuleViewController.m in Sources */,
+				1C2E333B1FB950880099C860 /* DragCollectionViewLayout.m in Sources */,
 				1C0CB4661F813FF1002B46DB /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

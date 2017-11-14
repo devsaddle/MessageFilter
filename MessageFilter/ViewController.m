@@ -10,9 +10,10 @@
 #import "CollectionViewCell.h"
 #import "RuleViewController.h"
 #import "RegularExpression.h"
+#import "DragCollectionView.h"
 
-@interface ViewController ()<UICollectionViewDataSource,UICollectionViewDelegate>
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@interface ViewController ()<DragCollectionViewDelegate,DragCollectionViewDataSource>
+@property (weak, nonatomic) DragCollectionView *collectionView;
 
 @end
 
@@ -20,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self setViews];
     [self setNavBar];
 }
 
@@ -32,11 +33,23 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.collectionView reloadData];
+//    [self.collectionView reloadData];
     
 }
 
 #pragma mark - Init Views
+- (void)setViews {
+    DragCollectionView *view = [[DragCollectionView alloc] initWithFrame:self.view.bounds];
+    view.backgroundColor = [UIColor whiteColor];
+    view.dataSource = self;
+    view.delegate = self;
+    [view.collectionView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"FilterRuleIdentifiter"];
+
+    self.collectionView = view;
+    [self.view addSubview:view];
+    
+}
+
 - (void)setNavBar {
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     self.navigationController.navigationBar.shadowImage = [UIImage new];
@@ -55,45 +68,46 @@
 }
 
 #pragma mark - UICollectionViewDataSource
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)dragCollectionView:(DragCollectionView *)dragCollectionView numberOfItemsInSection:(NSInteger)section {
     
     return messageFilterData().count;
     
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)dragCollectionView:(DragCollectionView *)dragCollectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *data = messageFilterData()[indexPath.row];
-    CollectionViewCell *cell = [CollectionViewCell collectionViewCell:collectionView indexPath:indexPath];
-    [cell setData:data];
+    CollectionViewCell *cell = [CollectionViewCell collectionViewCell:dragCollectionView.collectionView indexPath:indexPath];
+//    [cell setData:data];
     return cell;
     
 }
 
 #pragma mark - UICollectionViewDelegate
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (CGSize)dragCollectionView:(DragCollectionView *)dragCollectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return CGSizeMake(([UIScreen mainScreen].bounds.size.width - 60) * 0.5, 100);
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+- (UIEdgeInsets)dragCollectionView:(DragCollectionView *)dragCollectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     
     return UIEdgeInsetsMake(20, 20, 20, 20);
 }
 
 //cell的最小行间距
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)dragCollectionView:(DragCollectionView *)dragCollectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     
     return 20;
 }
 
 
 //cell被选择时被调用
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+- (void)dragCollectionView:(DragCollectionView *)dragCollectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
     RuleViewController *ruleViewController = [[RuleViewController alloc] init];
     ruleViewController.index = indexPath.row;
     [ruleViewController ruleData:messageFilterData()[indexPath.row]];
     [self.navigationController pushViewController:ruleViewController animated:YES];
 }
+
 
 
 #pragma mark -
