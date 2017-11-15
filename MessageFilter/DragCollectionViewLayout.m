@@ -55,17 +55,13 @@
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
     UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
     
-    NSLog(@"%@   %@",NSStringFromCGPoint(cell.center),NSStringFromCGPoint(point));
+//    NSLog(@"%@   %@",NSStringFromCGPoint(cell.center),NSStringFromCGPoint(point));
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
             [self.delegate willDraggingItemWithIndexPath:indexPath layout:self];
         }
-        CGPoint centerPoint = cell.center;
-        
-        CGFloat spacingX = point.x - centerPoint.x;
-        CGFloat spacingY = point.y - centerPoint.y;
-        
+
         [UIView animateWithDuration:0.3 animations:^{
             
             [self.collectionView bringSubviewToFront:cell];
@@ -78,14 +74,28 @@
         if (self.delegate && [self.delegate respondsToSelector:@selector(didDraggingItemWithIndexPath:layout:)]) {
             [self.delegate didDraggingItemWithIndexPath:indexPath layout:self];
         }
-        
+        CGPoint centerPoint = cell.center;
+       NSIndexPath *toIndexPath = [self.collectionView indexPathForItemAtPoint:point];
+//        CGFloat spacingX = point.x - centerPoint.x;
+//        CGFloat spacingY = point.y - centerPoint.y;
+        NSLog(@"%ld",indexPath.row);
+//        NSIndexPath *toIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        [UIView animateWithDuration:0.3 animations:^{
+            
+            [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:toIndexPath];
+            
+        }];
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(endDraggingItemWithIndexPath:layout:)]) {
             [self.delegate endDraggingItemWithIndexPath:indexPath layout:self];
         }
         
-        
+        [UIView animateWithDuration:0.3 animations:^{
+            
+            cell.transform = CGAffineTransformMakeScale(1, 1);
+            cell.alpha = 1.0;
+        }];
     }
 }
 

@@ -77,7 +77,7 @@
 - (UICollectionViewCell *)dragCollectionView:(DragCollectionView *)dragCollectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *data = messageFilterData()[indexPath.row];
     CollectionViewCell *cell = [CollectionViewCell collectionViewCell:dragCollectionView.collectionView indexPath:indexPath];
-//    [cell setData:data];
+    [cell setData:data];
     return cell;
     
 }
