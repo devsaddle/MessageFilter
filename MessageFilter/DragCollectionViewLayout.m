@@ -8,6 +8,18 @@
 
 #import "DragCollectionViewLayout.h"
 
+@interface DragCollectionViewLayout()
+{
+    CGFloat _spacingX;
+    CGFloat _spacingY;
+    NSIndexPath *_startIndexPath;
+    NSIndexPath *_endIndexPath;
+    UICollectionViewCell *_movingCell;
+    CGPoint _originalPoint;
+}
+
+@end
+
 @implementation DragCollectionViewLayout
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -37,6 +49,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if ([keyPath isEqualToString:@"collectionView"]) {
         [self addGesture];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -51,50 +65,76 @@
 }
 
 - (void)langGesture:(UILongPressGestureRecognizer *)gesture {
-    CGPoint point = [gesture locationInView:self.collectionView];
-    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
-    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
     
-//    NSLog(@"%@   %@",NSStringFromCGPoint(cell.center),NSStringFromCGPoint(point));
+    CGPoint point = [gesture locationInView:self.collectionView];
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate willDraggingItemWithIndexPath:indexPath layout:self];
-        }
-
+       // 开始拖动
+        _startIndexPath = [self.collectionView indexPathForItemAtPoint:point];
+        _movingCell = [self.collectionView cellForItemAtIndexPath:_startIndexPath];
+        _originalPoint = _movingCell.center;
+        _spacingX = point.x - _originalPoint.x;
+        _spacingY = point.y - _originalPoint.y;
+        
         [UIView animateWithDuration:0.3 animations:^{
             
-            [self.collectionView bringSubviewToFront:cell];
-            cell.transform = CGAffineTransformMakeScale(1.1, 1.1);
-            cell.alpha = 0.5;
+            [self.collectionView bringSubviewToFront:_movingCell];
+            _movingCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
+            _movingCell.alpha = 0.5;
         }];
-//        cgf originIndex = [self.collectionView indexPathForCell:cell];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
+            [self.delegate willDraggingItemWithIndexPath:_startIndexPath layout:self];
+        }
         
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
+        // 拖动
         if (self.delegate && [self.delegate respondsToSelector:@selector(didDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate didDraggingItemWithIndexPath:indexPath layout:self];
+            [self.delegate didDraggingItemWithIndexPath:_startIndexPath layout:self];
         }
-        CGPoint centerPoint = cell.center;
-       NSIndexPath *toIndexPath = [self.collectionView indexPathForItemAtPoint:point];
-//        CGFloat spacingX = point.x - centerPoint.x;
-//        CGFloat spacingY = point.y - centerPoint.y;
-        NSLog(@"%ld",indexPath.row);
-//        NSIndexPath *toIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        
+        _movingCell.center = CGPointMake(point.x - _spacingX, point.y - _spacingY);
+
+        _endIndexPath = [self.collectionView indexPathForItemAtPoint:_movingCell.center];
+
+        
+        
+        NSLog(@"section %ld row %ld",_endIndexPath.section ,_endIndexPath.row);
+        if (!_endIndexPath) {
+            _endIndexPath = _startIndexPath;
+        }
+
+
+        
+        UICollectionViewLayoutAttributes *attribute = [self layoutAttributesForItemAtIndexPath:_endIndexPath];
+        [self.collectionView performBatchUpdates:^{
+            
+            
+            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_endIndexPath];
+            
+ 
+        } completion:nil];
+        
+        
+        
         [UIView animateWithDuration:0.3 animations:^{
             
-            [self.collectionView moveItemAtIndexPath:indexPath toIndexPath:toIndexPath];
+//            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_endIndexPath];
             
         }];
         
+       
+        
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
+        // 拖动结束
         if (self.delegate && [self.delegate respondsToSelector:@selector(endDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate endDraggingItemWithIndexPath:indexPath layout:self];
+            [self.delegate endDraggingItemWithIndexPath:_endIndexPath layout:self];
         }
         
         [UIView animateWithDuration:0.3 animations:^{
-            
-            cell.transform = CGAffineTransformMakeScale(1, 1);
-            cell.alpha = 1.0;
+            _movingCell.center = _originalPoint;
+            _movingCell.transform = CGAffineTransformMakeScale(1, 1);
+            _movingCell.alpha = 1.0;
         }];
     }
 }
