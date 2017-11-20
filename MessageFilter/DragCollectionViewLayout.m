@@ -7,18 +7,28 @@
 //
 
 #import "DragCollectionViewLayout.h"
+@interface CellTempView : UIView
 
-@interface DragCollectionViewLayout()
-{
-    CGFloat _spacingX;
-    CGFloat _spacingY;
-    NSIndexPath *_startIndexPath;
-    NSIndexPath *_endIndexPath;
-    UICollectionViewCell *_movingCell;
-    CGPoint _originalPoint;
-}
+@property (nonatomic, strong)UICollectionViewCell *cell;
+@property (nonatomic, strong)UIImageView *cellScreenshotImageView;
+- (instancetype)initViewWithCell:(UICollectionViewCell *)cell;
 
 @end
+
+@interface DragCollectionViewLayout()
+
+@property (nonatomic, assign)CGFloat spacingX;
+@property (nonatomic, assign)CGFloat spacingY;
+@property (nonatomic, assign)CGPoint originalPoint;
+
+@property (nonatomic, strong)NSIndexPath *startIndexPath;
+@property (nonatomic, strong)NSIndexPath *toIndexPath;
+
+@property (nonatomic, strong)CellTempView *cellTempView;
+
+@end
+
+
 
 @implementation DragCollectionViewLayout
 
@@ -71,17 +81,20 @@
     if (gesture.state == UIGestureRecognizerStateBegan) {
        // 开始拖动
         _startIndexPath = [self.collectionView indexPathForItemAtPoint:point];
-        _movingCell = [self.collectionView cellForItemAtIndexPath:_startIndexPath];
-        _originalPoint = _movingCell.center;
+        UICollectionViewCell *cell  = [self.collectionView cellForItemAtIndexPath:_startIndexPath];
+        _originalPoint = cell.center;
         _spacingX = point.x - _originalPoint.x;
         _spacingY = point.y - _originalPoint.y;
         
-        [UIView animateWithDuration:0.3 animations:^{
-            
-            [self.collectionView bringSubviewToFront:_movingCell];
-            _movingCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
-            _movingCell.alpha = 0.5;
-        }];
+        _cellTempView = [[CellTempView alloc] initViewWithCell:cell];
+        [self.collectionView addSubview:_cellTempView];
+        
+//        [UIView animateWithDuration:0.3 animations:^{
+        
+//            [self.collectionView bringSubviewToFront:_movingCell];
+//            _movingCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
+//            _movingCell.alpha = 0.5;
+//        }];
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
             [self.delegate willDraggingItemWithIndexPath:_startIndexPath layout:self];
@@ -93,51 +106,93 @@
             [self.delegate didDraggingItemWithIndexPath:_startIndexPath layout:self];
         }
         
-        _movingCell.center = CGPointMake(point.x - _spacingX, point.y - _spacingY);
+        _cellTempView.center = CGPointMake(point.x - _spacingX, point.y - _spacingY);
+            [self invalidateLayout];
 
-        _endIndexPath = [self.collectionView indexPathForItemAtPoint:_movingCell.center];
-
-        
-        
-        NSLog(@"section %ld row %ld",_endIndexPath.section ,_endIndexPath.row);
-        if (!_endIndexPath) {
-            _endIndexPath = _startIndexPath;
-        }
-
+//        NSIndexPath *toIndexPath = [self.collectionView indexPathForItemAtPoint:_movingCell.center];
 
         
-        UICollectionViewLayoutAttributes *attribute = [self layoutAttributesForItemAtIndexPath:_endIndexPath];
-        [self.collectionView performBatchUpdates:^{
-            
-            
-            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_endIndexPath];
-            
- 
-        } completion:nil];
+//
+//        NSLog(@"section %ld row %ld",toIndexPath.section ,toIndexPath.row);
+//        if (toIndexPath == nil || _startIndexPath  == nil) {
+//            return;
+//        }
+//
+//        if ([_startIndexPath isEqual:toIndexPath]) {
+//            return;
+//        }
+//
+//        if ([toIndexPath isEqual:_toIndexPath]) {
+//            return;
+//        }
+//
+//        _toIndexPath = toIndexPath;
+//
+//        UICollectionViewLayoutAttributes *attribute = [self layoutAttributesForItemAtIndexPath:_toIndexPath];
+//        [self.collectionView performBatchUpdates:^{
+//
+//
+//            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_toIndexPath];
+//            [self invalidateLayout];
+//
+//        } completion:nil];
         
         
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            
-//            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_endIndexPath];
-            
-        }];
-        
+
        
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         // 拖动结束
         if (self.delegate && [self.delegate respondsToSelector:@selector(endDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate endDraggingItemWithIndexPath:_endIndexPath layout:self];
+            [self.delegate endDraggingItemWithIndexPath:_toIndexPath layout:self];
         }
         
         [UIView animateWithDuration:0.3 animations:^{
-            _movingCell.center = _originalPoint;
-            _movingCell.transform = CGAffineTransformMakeScale(1, 1);
-            _movingCell.alpha = 1.0;
+            _cellTempView.center = _originalPoint;
+            _cellTempView.transform = CGAffineTransformMakeScale(1, 1);
+            [_cellTempView removeFromSuperview];
         }];
     }
 }
 
+
+
+
+@end
+
+
+@implementation CellTempView
+
+- (instancetype)initViewWithCell:(UICollectionViewCell *)cell {
+    self = [super initWithFrame:cell.frame];
+     if (self) {
+         self.layer.cornerRadius = 2;
+         self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+         self.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+         self.layer.shadowOffset = CGSizeZero;
+         self.layer.shadowOpacity = 1;
+         self.layer.shadowRadius = 3;
+         self.layer.masksToBounds = NO;
+         self.alpha = 0.8;
+         self.transform = CGAffineTransformMakeScale(1.1, 1.1);
+
+         
+         self.cell = cell;
+         self.cellScreenshotImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+         self.cellScreenshotImageView.contentMode = UIViewContentModeScaleAspectFill;
+         self.cellScreenshotImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+         self.cellScreenshotImageView.image = [self screenshotForView:cell];
+         [self addSubview:self.cellScreenshotImageView];
+     }
+     return self;
+}
+
+- (UIImage *)screenshotForView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
 
 @end
