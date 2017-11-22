@@ -11,19 +11,20 @@
 
 @property (nonatomic, strong)UICollectionViewCell *cell;
 @property (nonatomic, strong)UIImageView *cellScreenshotImageView;
+@property (nonatomic, strong)NSIndexPath *indexPath;
+
 - (instancetype)initViewWithCell:(UICollectionViewCell *)cell;
 
 @end
 
-@interface DragCollectionViewLayout()
+@interface DragCollectionViewLayout()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign)CGFloat spacingX;
 @property (nonatomic, assign)CGFloat spacingY;
 @property (nonatomic, assign)CGPoint originalPoint;
 
-@property (nonatomic, strong)NSIndexPath *startIndexPath;
+@property (nonatomic, strong)NSIndexPath *atIndexPath;
 @property (nonatomic, strong)NSIndexPath *toIndexPath;
-
 @property (nonatomic, strong)CellTempView *cellTempView;
 
 @end
@@ -52,6 +53,17 @@
     [self removeObserver:self forKeyPath:@"collectionView"];
 }
 
+-(NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
+    NSArray *attributes = [super layoutAttributesForElementsInRect:rect];
+    [attributes enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj.indexPath isEqual:_cellTempView.indexPath]) {
+            obj.alpha = 0;
+        }
+    }];
+    
+    return attributes;
+}
+
 - (void)addObserver {
     [self addObserver:self forKeyPath:@"collectionView" options:NSKeyValueObservingOptionNew context:nil];
 }
@@ -70,6 +82,7 @@
     }
     
     UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(langGesture:)];
+    longGesture.delegate = self;
     [self.collectionView setGestureRecognizers:@[longGesture]];
     
 }
@@ -80,82 +93,116 @@
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
        // 开始拖动
-        _startIndexPath = [self.collectionView indexPathForItemAtPoint:point];
-        UICollectionViewCell *cell  = [self.collectionView cellForItemAtIndexPath:_startIndexPath];
+        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
+        UICollectionViewCell *cell  = [self.collectionView cellForItemAtIndexPath:indexPath];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
+            [self.delegate willDraggingItemWithIndexPath:indexPath layout:self];
+        }
+        
+        _atIndexPath = indexPath;
         _originalPoint = cell.center;
         _spacingX = point.x - _originalPoint.x;
         _spacingY = point.y - _originalPoint.y;
         
         _cellTempView = [[CellTempView alloc] initViewWithCell:cell];
+        _cellTempView.indexPath = indexPath;
         [self.collectionView addSubview:_cellTempView];
-        cell.alpha = 1;
-//        [UIView animateWithDuration:0.3 animations:^{
         
-//            [self.collectionView bringSubviewToFront:_movingCell];
-//            _movingCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
-//            _movingCell.alpha = 0.5;
-//        }];
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(willDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate willDraggingItemWithIndexPath:_startIndexPath layout:self];
-        }
+        [self invalidateLayout];
         
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
         // 拖动
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate didDraggingItemWithIndexPath:_startIndexPath layout:self];
-        }
-        
-        _cellTempView.center = CGPointMake(point.x - _spacingX, point.y - _spacingY);
-            [self invalidateLayout];
+        _cellTempView.center = [self dragOrientationForPoint:point];
+        [self invalidateLayout];
 
-//        NSIndexPath *toIndexPath = [self.collectionView indexPathForItemAtPoint:_movingCell.center];
-
-        
-//
-//        NSLog(@"section %ld row %ld",toIndexPath.section ,toIndexPath.row);
-//        if (toIndexPath == nil || _startIndexPath  == nil) {
-//            return;
-//        }
-//
-//        if ([_startIndexPath isEqual:toIndexPath]) {
-//            return;
-//        }
-//
-//        if ([toIndexPath isEqual:_toIndexPath]) {
-//            return;
-//        }
-//
-//        _toIndexPath = toIndexPath;
-//
-//        UICollectionViewLayoutAttributes *attribute = [self layoutAttributesForItemAtIndexPath:_toIndexPath];
-//        [self.collectionView performBatchUpdates:^{
-//
-//
-//            [self.collectionView moveItemAtIndexPath:_startIndexPath toIndexPath:_toIndexPath];
-//            [self invalidateLayout];
-//
-//        } completion:nil];
-        
-        
-
-       
+        [self moveItem];
         
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         // 拖动结束
-        if (self.delegate && [self.delegate respondsToSelector:@selector(endDraggingItemWithIndexPath:layout:)]) {
-            [self.delegate endDraggingItemWithIndexPath:_toIndexPath layout:self];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(endDraggingAtIndexPath:toIndexPath:layout:)]) {
+            [self.delegate endDraggingAtIndexPath:_atIndexPath toIndexPath:_toIndexPath layout:self];
         }
-        
         [UIView animateWithDuration:0.3 animations:^{
             _cellTempView.center = _originalPoint;
             _cellTempView.transform = CGAffineTransformMakeScale(1, 1);
             [_cellTempView removeFromSuperview];
+            _cellTempView = nil;
         }];
+        [self invalidateLayout];
+
     }
 }
 
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
+    CGPoint point = [gestureRecognizer locationInView:self.collectionView];
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(canMoveItemAtIndexPath:layout:)]) {
+       return [self.delegate canMoveItemAtIndexPath:indexPath layout:self];
+    }
+    return YES;
+    
+}
 
+- (void)moveItem {
+    
+    NSIndexPath *atIndexPath = _cellTempView.indexPath;
+    NSIndexPath *toIndexPath = [self.collectionView indexPathForItemAtPoint:_cellTempView.center];
+    
+    if (toIndexPath == nil || atIndexPath == nil) {
+        return;
+    }
+    
+    if ([atIndexPath isEqual:toIndexPath]) {
+        return;
+    }
+    
+    if ([toIndexPath isEqual:_toIndexPath]) {
+        return;
+    }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(canMoveToIndexPath:layout:)]) {
+        BOOL canMove = [self.delegate canMoveToIndexPath:toIndexPath layout:self];
+        if (!canMove) {
+            return;
+        }
+    }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(willMoveItemAtIndexPath:toIndexPath:layout:)]) {
+        [self.delegate willMoveItemAtIndexPath:atIndexPath toIndexPath:toIndexPath layout:self];
+    }
+    
+    _toIndexPath = toIndexPath;
+    [self.collectionView performBatchUpdates:^{
+        
+        _cellTempView.indexPath = toIndexPath;
+        [self.collectionView moveItemAtIndexPath:atIndexPath toIndexPath:toIndexPath];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didMoveItemAtIndexPath:toIndexPath:layout:)]) {
+            [self.delegate didMoveItemAtIndexPath:atIndexPath toIndexPath:toIndexPath layout:self];
+        }
+        
+    } completion:nil];
+    
+}
+
+
+- (CGPoint)dragOrientationForPoint:(CGPoint)point {
+    switch (self.dragOrientation) {
+        case DragOrientationALL:
+            return CGPointMake(point.x - _spacingX, point.y - _spacingY);
+            break;
+        case DragOrientationHorizontal:
+            return CGPointMake(point.x - _spacingX, _originalPoint.y );
+            break;
+        case DragOrientationVertical:
+            return CGPointMake(_originalPoint.x, point.y - _spacingY);
+            break;
+        default:
+            break;
+    }
+}
 
 
 @end

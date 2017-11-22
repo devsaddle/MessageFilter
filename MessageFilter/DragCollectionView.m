@@ -9,7 +9,7 @@
 #import "DragCollectionView.h"
 #import "DragCollectionViewLayout.h"
 
-@interface DragCollectionView()<UICollectionViewDelegate, UICollectionViewDataSource>
+@interface DragCollectionView()<UICollectionViewDelegate, UICollectionViewDataSource,DragCollectionViewLayoutDelegate>
 @property (nonatomic, strong)DragCollectionViewLayout *collectionViewLayout;
 @end
 
@@ -28,6 +28,7 @@
 - (void)initializeViewsWithFrame:(CGRect)frame {
     if (_collectionViewLayout == nil) {
         _collectionViewLayout = [[DragCollectionViewLayout alloc] init];
+        _collectionViewLayout.delegate = self;
     }
     if (_collectionView == nil) {
         _collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:_collectionViewLayout];
@@ -97,4 +98,9 @@
     }
     return 0;
 }
+
+#pragma mark - DragCollectionViewLayoutDelegate
+
+
+
 @end
