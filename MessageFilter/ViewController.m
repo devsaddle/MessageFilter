@@ -43,6 +43,7 @@
     view.backgroundColor = [UIColor whiteColor];
     view.dataSource = self;
     view.delegate = self;
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [view.collectionView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"FilterRuleIdentifiter"];
 
     self.collectionView = view;
@@ -101,7 +102,6 @@
 
 //cell被选择时被调用
 - (void)dragCollectionView:(DragCollectionView *)dragCollectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
- 
     RuleViewController *ruleViewController = [[RuleViewController alloc] init];
     ruleViewController.index = indexPath.row;
     [ruleViewController ruleData:messageFilterData()[indexPath.row]];

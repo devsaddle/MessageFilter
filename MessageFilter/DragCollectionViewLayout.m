@@ -88,7 +88,7 @@
         
         _cellTempView = [[CellTempView alloc] initViewWithCell:cell];
         [self.collectionView addSubview:_cellTempView];
-        
+        cell.alpha = 1;
 //        [UIView animateWithDuration:0.3 animations:^{
         
 //            [self.collectionView bringSubviewToFront:_movingCell];

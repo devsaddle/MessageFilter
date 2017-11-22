@@ -34,6 +34,7 @@
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = self.backgroundColor;
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:_collectionView];
         
     }
