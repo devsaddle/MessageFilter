@@ -33,13 +33,13 @@ NSUserDefaults *userDefault() {
 //      @"rules":@[@"word1",@"word2",@"word3"], // 关键词\号码数组\正则表达式};  
 
 NSArray *messageFilterData(void) {
-    if ([userDefault() objectForKey:@"MessageFilterData"]) {
-        return [userDefault() objectForKey:@"MessageFilterData"];
+    if ([userDefault() objectForKey:USER_DEFAULT_MESSAGEFILTER_RULE]) {
+        return [userDefault() objectForKey:USER_DEFAULT_MESSAGEFILTER_RULE];
     }
     
     NSArray *messageFilterData = @[@{@"type":@"1",
                                      @"name":@"关键词过滤",
-                                     @"rules":@[@"退订",@"回T",@"复T",@"百度",@"搜狐"]},
+                                     @"rules":@[@"退订",@"回T",@"复T",@"TD",@"td"]},
                                    
                                    @{@"type":@"2",
                                      @"name":@"号码过滤",
@@ -52,11 +52,14 @@ NSArray *messageFilterData(void) {
                                    @{@"type":@"4",
                                      @"name":@"正则号码过滤",
                                      @"rules":@[@"code2"]}];
-    [userDefault() setObject:messageFilterData forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
-    
+    savaToUserDefault(messageFilterData);
     return messageFilterData;
 }
     
+void savaToUserDefault(NSArray *filterArray) {
+    [userDefault() setObject:filterArray forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
+    [userDefault() synchronize];
+}
 
 
 NSString *typeName(NSString *type) {
@@ -84,7 +87,7 @@ NSInteger typeOfRule(NSDictionary *rule) {
 void addOneRule(NSDictionary *rule) {
     if (rule && rule.count > 0) {
        NSArray *ruleData = [messageFilterData() arrayByAddingObject:rule];
-        [userDefault() setObject:ruleData forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
+        savaToUserDefault(ruleData);
     }
 }
 
@@ -93,6 +96,6 @@ void updateUserDefaultData(NSDictionary *data, NSUInteger index) {
 
     NSMutableArray *rule = [NSMutableArray arrayWithArray:messageFilterData()];
     rule[index] = data;
-    [userDefault() setObject:rule forKey:USER_DEFAULT_MESSAGEFILTER_RULE];
+    savaToUserDefault(rule);
 }
 

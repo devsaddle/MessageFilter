@@ -108,8 +108,14 @@
     [self.navigationController pushViewController:ruleViewController animated:YES];
 }
 
-
-
+- (void)dragCollectionView:(DragCollectionView *)dragCollectionView endMoveAtIndexPath:(NSIndexPath *)atIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+    NSArray *filterArray = messageFilterData();
+    NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:filterArray];
+    id atObjct = tmpArray[atIndexPath.row];
+    [tmpArray removeObject:atObjct];
+    [tmpArray insertObject:atObjct atIndex:toIndexPath.row];
+    savaToUserDefault([tmpArray copy]);
+}
 #pragma mark -
 
 

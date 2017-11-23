@@ -17,7 +17,7 @@ typedef enum : NSUInteger {
 
 @protocol DragCollectionViewLayoutDelegate<NSObject>
 
-
+@optional
 - (void)willDraggingItemWithIndexPath:(NSIndexPath *)indexPath layout:(DragCollectionViewLayout *)layout;
 
 - (void)willMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath layout:(DragCollectionViewLayout *)layout;

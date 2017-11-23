@@ -18,18 +18,20 @@
  */
 NSInteger countOfMatchesInString(NSString *rule, NSString *string);
 
-
 /**
  UserDefault
  */
 NSUserDefaults *userDefault(void);
-
 
 /**
  UserDefault中的规则数据
  */
 NSArray *messageFilterData(void);
 
+/**
+ 保存数据到 UserDefault
+ */
+void savaToUserDefault(NSArray *filterArray);
 
 /**
  根据 type 类型返回对应的描述

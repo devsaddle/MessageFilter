@@ -100,7 +100,11 @@
 }
 
 #pragma mark - DragCollectionViewLayoutDelegate
-
+- (void)endDraggingAtIndexPath:(NSIndexPath *)atIndexPath toIndexPath:(NSIndexPath *)toIndexPath layout:(DragCollectionViewLayout *)layout {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(dragCollectionView:endMoveAtIndexPath:toIndexPath:)]) {
+        [self.delegate dragCollectionView:self endMoveAtIndexPath:atIndexPath toIndexPath:toIndexPath];
+    }
+}
 
 
 @end

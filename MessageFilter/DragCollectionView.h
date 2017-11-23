@@ -34,6 +34,8 @@
 
 - (CGFloat)dragCollectionView:(DragCollectionView *)dragCollectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
 
+- (void)dragCollectionView:(DragCollectionView *)dragCollectionView endMoveAtIndexPath:(NSIndexPath *)atIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+
 @end
 
 @interface DragCollectionView : UIView
