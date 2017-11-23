@@ -57,9 +57,9 @@
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
     
     if (self.isNewData) {
-        addOneRule(self.ruleDictionary);
+        addOneRule([self.ruleDictionary copy]);
     } else {
-        updateUserDefaultData(self.ruleDictionary, self.index);
+        updateUserDefaultData([self.ruleDictionary copy], self.index);
     }
     [self.navigationController popViewControllerAnimated:YES];
     
@@ -200,14 +200,14 @@
     [rules removeObjectAtIndex:indexPath.row];
     rule[@"rules"] = rules;
     self.ruleDictionary = rule;
-    updateUserDefaultData(rule, self.index);
+    updateUserDefaultData([rule copy], self.index);
     [self.tableView reloadData];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
 
-    updateUserDefaultData(self.ruleDictionary, self.index);
+    updateUserDefaultData([self.ruleDictionary copy], self.index);
 }
 
 #pragma mark -
