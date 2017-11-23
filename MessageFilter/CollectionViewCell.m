@@ -85,11 +85,13 @@
     self.shadowLayer.frame = self.bounds;
 }
 
-- (void)setData:(NSDictionary *)data {
-    self.titleLabel.text = [data valueForKey:@"name"];
-    self.typeLabel.text = typeName([data valueForKey:@"type"]);
+
+- (void)setRuleData:(NSDictionary *)ruleData {
+    _ruleData = ruleData;
+    self.titleLabel.text = [ruleData valueForKey:@"name"];
+    self.typeLabel.text = typeName([ruleData valueForKey:@"type"]);
     NSString *rule = @"";
-    for (NSString *ruleStr in [data valueForKey:@"rules"] ) {
+    for (NSString *ruleStr in [ruleData valueForKey:@"rules"] ) {
         rule = [[rule stringByAppendingString:ruleStr] stringByAppendingString:@","];
         
     }

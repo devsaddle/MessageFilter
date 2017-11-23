@@ -13,5 +13,5 @@
 @property(nonatomic, assign)NSUInteger index;
 
 - (void)ruleData:(NSDictionary *)ruleDic;
-
+- (void)deleteCompletion:(void (^)(NSUInteger index))completion;
 @end

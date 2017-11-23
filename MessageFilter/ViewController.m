@@ -12,7 +12,7 @@
 #import "RegularExpression.h"
 #import "DragCollectionView.h"
 
-@interface ViewController ()<DragCollectionViewDelegate,DragCollectionViewDataSource>
+@interface ViewController ()<DragCollectionViewDelegate,DragCollectionViewDataSource,UIViewControllerPreviewingDelegate>
 @property (weak, nonatomic) DragCollectionView *collectionView;
 
 @end
@@ -33,7 +33,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    [self.collectionView reloadData];
+    [self.collectionView.collectionView reloadData];
     
 }
 
@@ -78,7 +78,8 @@
 - (UICollectionViewCell *)dragCollectionView:(DragCollectionView *)dragCollectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *data = messageFilterData()[indexPath.row];
     CollectionViewCell *cell = [CollectionViewCell collectionViewCell:dragCollectionView.collectionView indexPath:indexPath];
-    [cell setData:data];
+    [cell setRuleData:data];
+    [self registerForPreviewingWithDelegate:self sourceView:cell];
     return cell;
     
 }
@@ -116,7 +117,23 @@
     [tmpArray insertObject:atObjct atIndex:toIndexPath.row];
     savaToUserDefault([tmpArray copy]);
 }
-#pragma mark -
 
+
+#pragma mark - UIViewControllerPreviewingDelegate
+
+- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    CollectionViewCell *cell = (CollectionViewCell *)previewingContext.sourceView;
+    NSIndexPath *indexPath = [self.collectionView.collectionView indexPathForCell:cell];
+    RuleViewController *ruleViewController = [[RuleViewController alloc] init];
+    ruleViewController.index = indexPath.row;
+    [ruleViewController ruleData:cell.ruleData];
+    [ruleViewController deleteCompletion:^(NSUInteger index) {
+        [self.collectionView.collectionView reloadData];
+    }];
+    return ruleViewController;
+}
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
+}
 
 @end

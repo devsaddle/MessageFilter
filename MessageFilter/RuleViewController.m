@@ -15,7 +15,7 @@
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong)__block NSMutableDictionary *ruleDictionary;
 @property(nonatomic, assign, getter=isNewData)BOOL newsData;
-
+@property (nonatomic, copy) void(^deleteCompletion)(NSUInteger index);
 @end
 
 @implementation RuleViewController
@@ -242,6 +242,31 @@
 }
 
 
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
+    UIPreviewAction *deleteAction = [UIPreviewAction actionWithTitle:@"确定删除？" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        
+        NSArray *filterArray = messageFilterData();
+        NSMutableArray *tmpArray = [NSMutableArray arrayWithArray:filterArray];
+        [tmpArray removeObjectAtIndex:self.index];
+        savaToUserDefault([tmpArray copy]);
+        
+        if (self.deleteCompletion) {
+            self.deleteCompletion(self.index);
+        }
+    }];
+    
+    UIPreviewAction *cancelAction = [UIPreviewAction actionWithTitle:@"取消" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+       
+    }];
+    
+    UIPreviewActionGroup *deleteActionGroup = [UIPreviewActionGroup actionGroupWithTitle:@"删除" style:UIPreviewActionStyleDestructive actions:@[deleteAction,cancelAction]];
+
+    return @[deleteActionGroup];
+}
+
+- (void)deleteCompletion:(void (^)(NSUInteger index))completion {
+    _deleteCompletion = completion;
+}
 
 #pragma mark - Lazy Load
 - (UITableView *)tableView {

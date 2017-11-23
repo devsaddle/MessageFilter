@@ -106,5 +106,10 @@
     }
 }
 
+- (void)willDraggingItemWithIndexPath:(NSIndexPath *)indexPath layout:(DragCollectionViewLayout *)layout {
+
+    
+}
+
 
 @end

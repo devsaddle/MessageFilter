@@ -11,5 +11,5 @@
 @interface CollectionViewCell : UICollectionViewCell
 
 + (instancetype)collectionViewCell:(UICollectionView *)collectionView indexPath:(NSIndexPath *)indexPath;
-- (void)setData:(NSDictionary *)data;
+@property (nonatomic, strong)NSDictionary *ruleData;
 @end
