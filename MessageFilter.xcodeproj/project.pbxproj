@@ -158,15 +158,12 @@
 		1C0CB4631F813FF1002B46DB /* MessageFilter */ = {
 			isa = PBXGroup;
 			children = (
+				1C1D80941FCBFDFC00BF3E1A /* DragCollectionView */,
 				1C0CB4A71F8148F0002B46DB /* MessageFilter.entitlements */,
 				1C0CB4641F813FF1002B46DB /* AppDelegate.h */,
 				1C0CB4651F813FF1002B46DB /* AppDelegate.m */,
 				1C0CB4671F813FF1002B46DB /* ViewController.h */,
 				1C0CB4681F813FF1002B46DB /* ViewController.m */,
-				1C2E33361FB948410099C860 /* DragCollectionView.h */,
-				1C2E33371FB948410099C860 /* DragCollectionView.m */,
-				1C2E33391FB950880099C860 /* DragCollectionViewLayout.h */,
-				1C2E333A1FB950880099C860 /* DragCollectionViewLayout.m */,
 				1C0CB4A91F814C05002B46DB /* CollectionViewCell.h */,
 				1C0CB4AA1F814C05002B46DB /* CollectionViewCell.m */,
 				1CBB9E671F95B53F00215568 /* RuleViewController.h */,
@@ -211,6 +208,17 @@
 				1C0CB49F1F814090002B46DB /* Info.plist */,
 			);
 			path = FilterExtension;
+			sourceTree = "<group>";
+		};
+		1C1D80941FCBFDFC00BF3E1A /* DragCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				1C2E33361FB948410099C860 /* DragCollectionView.h */,
+				1C2E33371FB948410099C860 /* DragCollectionView.m */,
+				1C2E33391FB950880099C860 /* DragCollectionViewLayout.h */,
+				1C2E333A1FB950880099C860 /* DragCollectionViewLayout.m */,
+			);
+			path = DragCollectionView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -574,7 +582,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MessageFilter/MessageFilter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RBYCEMQAHE;
+				DEVELOPMENT_TEAM = RP3G4L5Z8H;
 				INFOPLIST_FILE = MessageFilter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuan.MessageFilter;
@@ -589,7 +597,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MessageFilter/MessageFilter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RBYCEMQAHE;
+				DEVELOPMENT_TEAM = RP3G4L5Z8H;
 				INFOPLIST_FILE = MessageFilter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuan.MessageFilter;
@@ -661,7 +669,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FilterExtension/FilterExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RBYCEMQAHE;
+				DEVELOPMENT_TEAM = RP3G4L5Z8H;
 				INFOPLIST_FILE = FilterExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuan.MessageFilter.FilterExtension;
@@ -676,7 +684,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FilterExtension/FilterExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = RBYCEMQAHE;
+				DEVELOPMENT_TEAM = RP3G4L5Z8H;
 				INFOPLIST_FILE = FilterExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuan.MessageFilter.FilterExtension;

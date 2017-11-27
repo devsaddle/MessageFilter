@@ -9,7 +9,7 @@
 #import "RegularExpression.h"
 
 #define USER_DEFAULT_MESSAGEFILTER_RULE @"MessageFilterData"
-#define USER_DEFAULT_SUITE_NAME @"group.yuan.messagefilter"
+#define USER_DEFAULT_SUITE_NAME @"group.com.yuan.messagefilter"
 
 NSInteger countOfMatchesInString(NSString *rule, NSString *string) {
     
@@ -38,20 +38,24 @@ NSArray *messageFilterData(void) {
     }
     
     NSArray *messageFilterData = @[@{@"type":@"1",
-                                     @"name":@"关键词过滤",
+                                     @"name":@"退订类关键词过滤",
                                      @"rules":@[@"退订",@"回T",@"复T",@"TD",@"td"]},
+                                   
+                                   @{@"type":@"1",
+                                     @"name":@"赌场类关键词过滤",
+                                     @"rules":@[@"赌场",@"下注",@"真人",@"澳门"]},
                                    
                                    @{@"type":@"2",
                                      @"name":@"号码过滤",
-                                     @"rules":@[@"10086",@"10655024113090",]},
+                                     @"rules":@[@"10655024113090",]},
                                    
                                    @{@"type":@"3",
                                      @"name":@"正则内容过滤",
-                                     @"rules":@[@"word1"]},
+                                     @"rules":@[@"^([代]+)(.*)([开,開]+)(.*)([发,發,髮]+)(.*)([票]+)(.*)$"]},
                                    
                                    @{@"type":@"4",
                                      @"name":@"正则号码过滤",
-                                     @"rules":@[@"code2"]}];
+                                     @"rules":@[@"^1708285477[0-9]{1}$"]}];
     savaToUserDefault(messageFilterData);
     return messageFilterData;
 }

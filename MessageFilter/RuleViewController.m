@@ -187,7 +187,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1 && (typeOfRule(self.ruleDictionary) == 1 || typeOfRule(self.ruleDictionary) == 2)) {
+    if (indexPath.section == 1 && (typeOfRule(self.ruleDictionary) == 1 || typeOfRule(self.ruleDictionary) == 2) && (indexPath.row != [self.ruleDictionary[@"rules"] count])) {
         return YES;
     }
     return NO;
